@@ -1,0 +1,16 @@
+openapi: 3.0.2
+info:
+  title: User API
+  description: API for managing users
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /users:
+    get:
+      summary: Get list of users
+      responses:
+        '200':
+          description: List of users

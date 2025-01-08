@@ -1,0 +1,41 @@
+# Ignore npm dependencies
+node_modules/
+
+# Ignore IDE logs and temporary files
+*.log
+*.tmp
+
+# Ignore editor settings and cache
+.idea/
+.vscode/
+
+# Ignore browser data (e.g., cookies, history)
+*.cache
+
+# Ignore build artifacts (e.g., compiled code)
+build/
+dist/
+
+# Ignore databases and database dumps
+*.db
+*.sqlite3
+database/
+
+# Ignore coverage reports
+coverage/
+
+# Ignore linting and testing tools
+.jshintrc
+.eslintrc.json
+*.jshintignore
+test/
+
+# Ignore documentation
+apidoc/
+docs/
+
+# Ignore version control files
+package-lock.json
+
+# Node.js environment variables file (if using)
+.env
