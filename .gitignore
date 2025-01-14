@@ -1,41 +1,59 @@
-# Ignore npm dependencies
-node_modules/
+# compiled output
+/dist
+/node_modules
+/build
 
-# Ignore IDE logs and temporary files
+# Logs
+logs
 *.log
-*.tmp
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
-# Ignore editor settings and cache
-.idea/
-.vscode/
+# OS
+.DS_Store
 
-# Ignore browser data (e.g., cookies, history)
-*.cache
+# Tests
+/coverage
+/.nyc_output
 
-# Ignore build artifacts (e.g., compiled code)
-build/
-dist/
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# Ignore databases and database dumps
-*.db
-*.sqlite3
-database/
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# Ignore coverage reports
-coverage/
-
-# Ignore linting and testing tools
-.jshintrc
-.eslintrc.json
-*.jshintignore
-test/
-
-# Ignore documentation
-apidoc/
-docs/
-
-# Ignore version control files
-package-lock.json
-
-# Node.js environment variables file (if using)
+# dotenv environment variable files
 .env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# temp directory
+.temp
+.tmp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Files
+password.config.ts
