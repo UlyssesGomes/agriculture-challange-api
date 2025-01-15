@@ -12,7 +12,7 @@ export class FarmController {
     }
 
     @Post()
-    async createFarm(@Body() farmData: Partial<Farm>): Promise<Farm> {
+    async createFarm(@Body() farmData: any): Promise<Farm> {
         return await this.farmService.createFarm(farmData);
     }
 
@@ -29,9 +29,9 @@ export class FarmController {
     @Put('/:id')
     async updateFarm(
         @Param('id') id: number,
-        @Body() farmData: Partial<Farm>,
+        @Body() updateFarmDto: any,
     ): Promise<Farm | undefined> {
-        return await this.farmService.updateFarm(id, farmData);
+        return await this.farmService.updateFarm(id, updateFarmDto);
     }
 
     @Delete('/:id')

@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -10,7 +11,14 @@ import { HarvestModule } from './harvest/harvest.module';
 import { PlantedCropModule } from './planted-crop/planted-crop.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), ProducerModule, FarmModule, HarvestModule, PlantedCropModule],
+  imports: [
+    TypeOrmModule.forRoot(typeOrmConfig), 
+    ConfigModule.forRoot({ isGlobal: true }),
+    ProducerModule, 
+    FarmModule, 
+    HarvestModule, 
+    PlantedCropModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

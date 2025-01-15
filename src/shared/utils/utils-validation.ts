@@ -22,7 +22,6 @@ export class UtilsValidation {
 
         let firstDigit = sum % 11;
         firstDigit = firstDigit < 2? 0 : 11 - firstDigit;
-        console.log('first: ', firstDigit);
 
         multipleFactorArray = [...[multipleFactorArrayExt], ...multipleFactorArray]
 
@@ -36,7 +35,6 @@ export class UtilsValidation {
 
         let secondDigit = sum % 11;
         secondDigit = secondDigit < 2? 0 : 11 - secondDigit;
-        console.log('sedcond: ', secondDigit);
 
         if(parseInt(word.charAt(word.length-2)) != firstDigit || parseInt(word.charAt(word.length-1)) != secondDigit) {
             return false;

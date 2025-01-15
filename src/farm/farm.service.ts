@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Farm } from './farm.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,9 +14,15 @@ export class FarmService {
         return await this.farmRepository.find();
     }
 
-    async createFarm(farmData: Partial<Farm>): Promise<Farm> {
-        const newFarm = this.farmRepository.create(farmData);
-        return await this.farmRepository.save(newFarm);
+    private preCreate(data) {
+        if(data.totalArea < (data.vegetationArea + data.arableArea))
+            throw new BadRequestException(`The total area must be greater than or equal to the sum of vegetation area plus arable area`);
+    }
+
+    async createFarm(farmData: any): Promise<Farm> {
+        this.preCreate(farmData);
+        await this.farmRepository.insert(farmData);
+        return farmData;
     }
 
     async getFarmById(id: number): Promise<Farm | undefined> {
@@ -31,7 +37,7 @@ export class FarmService {
         const existingFarm = await this.getFarmById(id);
 
         if (!existingFarm) {
-            throw new Error(`Farm with ID ${id} not found`);
+            throw new NotFoundException(`Farm with ID ${id} not found`);
         }
 
         Object.assign(existingFarm, farmData);
@@ -54,6 +60,3 @@ export class FarmService {
             .then((farms) => farms);
     }
 }
-
-
-// now create to me 3 different curl request to create 3 farms considering  and producerId = 2.

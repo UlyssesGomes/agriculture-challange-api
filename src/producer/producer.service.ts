@@ -4,7 +4,7 @@ import { Producer } from './producer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProducerType } from './producer.enum';
-import { UtilsValidation } from 'src/utils/utils-validation';
+import { UtilsValidation } from 'src/shared/utils/utils-validation';
 
 @Injectable()
 export class ProducerService {
@@ -29,22 +29,29 @@ export class ProducerService {
         }
     }
 
-    private preUpdate(data) {
+    async create(data: any) {
         this.preCreate(data);
-    }
-
-    create(data: any) {
-        this.preCreate(data);
-        return this.producerRepository.save(data);
+        await this.producerRepository.insert(data);
+        return data;
     }
 
     update(id: string, data: any) {
-        this.preUpdate(data);
         return this.producerRepository.update(id, data);
     }
 
     async findOne(id: number) {
         const producer = await this.producerRepository.findOne({ where: { id } });
+        if (!producer) {
+            throw new NotFoundException(`Producer with ID ${id} not found`);
+        }
+        return producer;
+    }
+
+    async findOneWithDetails(id: number) {
+        const producer = await this.producerRepository.findOne({
+            where: { id },
+            relations: ['farms', 'farms.harvests', 'farms.harvests.plantedCrops'],
+        });
         if (!producer) {
             throw new NotFoundException(`Producer with ID ${id} not found`);
         }

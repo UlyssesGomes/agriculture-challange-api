@@ -26,6 +26,11 @@ export class ProducerController {
       return this.producerService.findOne(+id);
     }
 
+    @Get('/:id/details')
+    findByIdWithDetails(@Param('id') id: string) {
+      return this.producerService.findOneWithDetails(+id);
+    }
+
     @Delete('/:id')
     remove(@Param('id') id: string) {
       return this.producerService.delete(+id);
