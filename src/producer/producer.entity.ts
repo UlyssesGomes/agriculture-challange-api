@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity } from 'typeorm';
-// import { Farm } from '../farm/farm.entity';
+
+import { Farm } from 'src/farm/farm.entity';
+import { ProducerType } from './producer.enum';
 
 @Entity()
 export class Producer extends BaseEntity {
@@ -12,9 +14,12 @@ export class Producer extends BaseEntity {
   @Column({ nullable: true, unique: true })
   cpf: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 300, nullable: false })
   name: string;
 
-//   @OneToMany(() => Farm, (farm) => farm.producer)
-//   farms: Farm[];
+  @Column({ type: 'varchar', length: 2 })
+  type: ProducerType;
+
+  @OneToMany(() => Farm, (farm) => farm.producer)
+  farms: Farm[];
 }

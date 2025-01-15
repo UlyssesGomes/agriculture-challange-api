@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 
 import { ProducerService } from './producer.service';
 
@@ -14,5 +14,20 @@ export class ProducerController {
     @Post()
     create(@Body() createProducerDto: any) {
       return this.producerService.create(createProducerDto);
+    }
+
+    @Patch('/:id')
+    update(@Body() updateProducerDto: any, @Param('id') id: string) {
+      return this.producerService.update(id, updateProducerDto);
+    }
+
+    @Get('/:id')
+    findById(@Param('id') id: string) {
+      return this.producerService.findOne(+id);
+    }
+
+    @Delete('/:id')
+    remove(@Param('id') id: string) {
+      return this.producerService.delete(+id);
     }
 }

@@ -5,9 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { ProducerModule } from './producer/producer.module';
+import { FarmModule } from './farm/farm.module';
+import { HarvestModule } from './harvest/harvest.module';
+import { PlantedCropModule } from './planted-crop/planted-crop.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), ProducerModule],
+  imports: [TypeOrmModule.forRoot(typeOrmConfig), ProducerModule, FarmModule, HarvestModule, PlantedCropModule],
   controllers: [AppController],
   providers: [AppService],
 })
