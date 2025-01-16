@@ -8,6 +8,7 @@ import { UtilsValidation } from 'src/shared/utils/utils-validation';
 
 @Injectable()
 export class ProducerService {
+
     constructor(
         @InjectRepository(Producer)
         private producerRepository: Repository<Producer>,
@@ -18,11 +19,11 @@ export class ProducerService {
     }
 
     private preCreate(data) {
-        if(data.type === ProducerType.PF) {
-            if(!UtilsValidation.validateCpfDigits(data.cpf))
+        if (data.type === ProducerType.PF) {
+            if (!UtilsValidation.validateCpfDigits(data.cpf))
                 throw new BadRequestException(`Producer must have a valid CPF with only digits.`);
         } else if (data.type === ProducerType.PJ) {
-            if(!UtilsValidation.validateCnpjDigits(data.cnpj))
+            if (!UtilsValidation.validateCnpjDigits(data.cnpj))
                 throw new BadRequestException(`Producer must have a valid CNPJ with only digits.`);
         } else {
             throw new BadRequestException(`Producer must have a type PF or PJ.`);
@@ -35,8 +36,15 @@ export class ProducerService {
         return data;
     }
 
-    update(id: string, data: any) {
-        return this.producerRepository.update(id, data);
+    async update(id: number, data: any) {
+        const producer = await this.producerRepository.findOne({ where: { id } });
+
+        if (!producer) {
+            throw new NotFoundException(`Producer with ID ${id} not found`);
+        }
+
+        Object.assign(producer, data);
+        return this.producerRepository.save(producer);
     }
 
     async findOne(id: number) {
@@ -58,7 +66,10 @@ export class ProducerService {
         return producer;
     }
 
-    delete(id: number) {
-        return this.producerRepository.delete(id);
+    async delete(id: number) {
+        const result = await this.producerRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException(`Producer with ID ${id} not found`);
+        }
     }
 }
