@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post } from '@nestjs/common';
 
 import { ApiTags, ApiOperation, ApiProperty, ApiResponse, ApiBody, ApiParam } from '@nestjs/swagger';
 import { ProducerService } from './producer.service';
@@ -25,15 +25,6 @@ export class ProducerController {
     return this.producerService.create(createProducerDto);
   }
 
-  @Patch('/:id')
-  @ApiOperation({ summary: 'Update a producer by ID' })
-  @ApiResponse({ status: 200, description: 'Producer updated successfully' })
-  @ApiResponse({ status: 404, description: 'Producer not found' })
-  @ApiParam({ name: 'id', type: 'number', description: 'ID of the producer to update'})
-  update(@Body() updateProducerDto: ProducerDto, @Param('id') id: number) {
-    return this.producerService.update(id, updateProducerDto);
-  }
-
   @Get('/:id')
   @ApiOperation({ summary: 'Find a producer by ID' })
   @ApiResponse({ status: 200, description: 'Producer found successfully' })
@@ -53,14 +44,31 @@ export class ProducerController {
     return this.producerService.findOneWithDetails(id);
   }
 
+  @Patch('/:id')
+  @ApiOperation({ summary: 'Update a producer by ID' })
+  @ApiResponse({ status: 200, description: 'Producer updated successfully' })
+  @ApiResponse({ status: 404, description: 'Producer not found' })
+  @ApiParam({ name: 'id', type: 'number', description: 'ID of the producer to update'})
+  async update(@Body() updateProducerDto: ProducerDto, @Param('id') id: number) {
+    const producerResponse = await this.producerService.update(id, updateProducerDto);
+
+    if(!producerResponse) {
+      throw new NotFoundException(`Producer with ID ${id} not found`);
+    }
+
+    return producerResponse;
+  }
+
   @Delete('/:id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Delete a producer by ID' })
   @ApiResponse({ status: 204, description: 'Producer deleted successfully' })
   @ApiResponse({ status: 404, description: 'Producer not found' })
   @ApiParam({ name: 'id', type: 'number', description: 'ID of the producer to delete'})
-  remove(@Param('id') id: number) {
-    this.producerService.delete(id);
-    return { };
+  async remove(@Param('id') id: number) {
+    const rowsAffected = await this.producerService.delete(id);
+    if(rowsAffected === 0)
+      throw new NotFoundException(`Producer with ID ${id} not found`);
+    return;
   }
 }

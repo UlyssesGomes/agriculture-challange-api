@@ -40,11 +40,11 @@ export class ProducerService {
         const producer = await this.producerRepository.findOne({ where: { id } });
 
         if (!producer) {
-            throw new NotFoundException(`Producer with ID ${id} not found`);
+            return null;
         }
 
         Object.assign(producer, data);
-        return this.producerRepository.save(producer);
+        return await this.producerRepository.save(producer);
     }
 
     async findOne(id: number) {
@@ -68,8 +68,6 @@ export class ProducerService {
 
     async delete(id: number) {
         const result = await this.producerRepository.delete(id);
-        if (result.affected === 0) {
-            throw new NotFoundException(`Producer with ID ${id} not found`);
-        }
+        return result.affected;
     }
 }

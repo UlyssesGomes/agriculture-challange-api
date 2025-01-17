@@ -10,12 +10,12 @@ export class FarmService {
         private readonly farmRepository: Repository<Farm>,
     ) { }
 
-    async getAllFarms(): Promise<Farm[]> {
-        return await this.farmRepository.find();
+    getAllFarms() {
+        return this.farmRepository.find();
     }
 
     private preCreate(data) {
-        if(data.totalArea < (data.vegetationArea + data.arableArea))
+        if (data.totalArea < (data.vegetationArea + data.arableArea))
             throw new BadRequestException(`The total area must be greater than or equal to the sum of vegetation area plus arable area`);
     }
 
@@ -34,29 +34,31 @@ export class FarmService {
     }
 
     async updateFarm(id: number, farmData: Partial<Farm>): Promise<Farm | undefined> {
-        const existingFarm = await this.getFarmById(id);
+        const existingFarm = await this.farmRepository.findOne({ where: { id } });
 
         if (!existingFarm) {
-            throw new NotFoundException(`Farm with ID ${id} not found`);
+            return null;
         }
 
         Object.assign(existingFarm, farmData);
         return await this.farmRepository.save(existingFarm);
     }
 
-    async deleteFarm(id: number): Promise<void> {
-        const existingFarm = await this.getFarmById(id);
-
-        if (existingFarm) {
-            await this.farmRepository.delete(id);
-        }
+    async delete(id: number) {
+        const result = await this.farmRepository.delete(id);
+        return result.affected;
     }
 
     async getFarmsByProducer(producerId: number): Promise<Farm[]> {
-        return await this.farmRepository
+        const farms = await this.farmRepository
             .find({
                 where: { producer: { id: producerId } },
-            })
-            .then((farms) => farms);
+            });
+
+        if (!farms) {
+            throw new NotFoundException(`No farm found associated to Producer with ID ${producerId}`);
+        }
+
+        return farms;
     }
 }

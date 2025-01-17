@@ -15,7 +15,7 @@ export class PlantedCropService {
         return await this.plantedCropRepository.find();
       }
     
-      async createPlantedCrop(plantedCropData: Partial<PlantedCrop>) {
+      async create(plantedCropData: Partial<PlantedCrop>) {
         await this.plantedCropRepository.insert(plantedCropData);
         return plantedCropData;
       }
@@ -24,7 +24,7 @@ export class PlantedCropService {
         return await this.plantedCropRepository.findOne({ where: { id } });
       }
     
-      async updatePlantedCrop(id: number, plantedCropData: Partial<PlantedCrop>): Promise<PlantedCrop | undefined> {
+      async update(id: number, plantedCropData: Partial<PlantedCrop>): Promise<PlantedCrop | undefined> {
         const existingPlantedCrop = await this.getPlantedCropById(id);
     
         if (!existingPlantedCrop) {
@@ -35,11 +35,8 @@ export class PlantedCropService {
         return await this.plantedCropRepository.save(existingPlantedCrop);
       }
     
-      async deletePlantedCrop(id: number): Promise<void> {
-        const existingPlantedCrop = await this.getPlantedCropById(id);
-    
-        if (existingPlantedCrop) {
-          await this.plantedCropRepository.delete(id);
-        }
+      async delete(id: number) {
+        const result = await this.plantedCropRepository.delete(id);
+        return result.affected;
       }
 }
