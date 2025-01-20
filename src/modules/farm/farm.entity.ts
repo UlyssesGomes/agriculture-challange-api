@@ -7,8 +7,8 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-import { Harvest } from 'src/modules/harvest/harvest.entity';
-import { Producer } from 'src/modules/producer/producer.entity';
+import { Harvest } from '../harvest/harvest.entity';
+import { Producer } from '../producer/producer.entity';
 
 @Entity()
 export class Farm extends BaseEntity {

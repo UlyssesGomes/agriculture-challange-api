@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Harvest } from 'src/modules/harvest/harvest.entity';
+import { Harvest } from '../harvest/harvest.entity';
 
 @Entity()
 export class PlantedCrop extends BaseEntity {

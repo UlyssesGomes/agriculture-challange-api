@@ -31,7 +31,7 @@ export class HarvestService {
     const existingHarvest = await this.getHarvestById(id);
 
     if (!existingHarvest) {
-      throw new NotFoundException(`Harvest with ID ${id} not found`);
+      return null;
     }
 
     Object.assign(existingHarvest, harvestData);

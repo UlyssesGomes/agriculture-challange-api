@@ -8,14 +8,14 @@ import { Producer } from './producer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProducerType } from './producer.enum';
-import { UtilsValidation } from 'src/shared/utils/utils-validation';
+import { UtilsValidation } from '../../shared/utils/utils-validation';
 
 @Injectable()
 export class ProducerService {
   constructor(
     @InjectRepository(Producer)
     private producerRepository: Repository<Producer>,
-  ) {}
+  ) { }
 
   findAll() {
     return this.producerRepository.find();

@@ -21,17 +21,21 @@ export class PlantedCropService {
   }
 
   async getPlantedCropById(id: number): Promise<PlantedCrop | undefined> {
-    return await this.plantedCropRepository.findOne({ where: { id } });
+    const plantedCrop = await this.plantedCropRepository.findOne({ where: { id } });
+    if (!plantedCrop) {
+      throw new NotFoundException(`Planted Crop with ID ${id} not found`);
+    }
+    return plantedCrop;
   }
 
   async update(
     id: number,
     plantedCropData: Partial<PlantedCrop>,
   ): Promise<PlantedCrop | undefined> {
-    const existingPlantedCrop = await this.getPlantedCropById(id);
+    const existingPlantedCrop = await this.plantedCropRepository.findOne({ where: { id } });
 
     if (!existingPlantedCrop) {
-      throw new NotFoundException(`Planted Crop with ID ${id} not found`);
+      return null;
     }
 
     Object.assign(existingPlantedCrop, plantedCropData);

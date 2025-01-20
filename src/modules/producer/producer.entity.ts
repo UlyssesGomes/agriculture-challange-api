@@ -6,7 +6,7 @@ import {
   BaseEntity,
 } from 'typeorm';
 
-import { Farm } from 'src/modules/farm/farm.entity';
+import { Farm } from '../farm/farm.entity';
 import { ProducerType } from './producer.enum';
 
 @Entity()
