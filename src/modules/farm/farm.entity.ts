@@ -36,6 +36,6 @@ export class Farm extends BaseEntity {
   @ManyToOne(() => Producer, (producer) => producer.farms)
   producer: Producer;
 
-  @OneToMany(() => Harvest, (harvest) => harvest.farm)
+  @OneToMany(() => Harvest, (harvest) => harvest.farm, { cascade: true, onDelete: 'CASCADE' })
   harvests: Harvest[];
 }

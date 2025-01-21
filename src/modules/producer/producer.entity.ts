@@ -26,6 +26,6 @@ export class Producer extends BaseEntity {
   @Column({ type: 'varchar', length: 2 })
   type: ProducerType;
 
-  @OneToMany(() => Farm, (farm) => farm.producer)
+  @OneToMany(() => Farm, (farm) => farm.producer, { cascade: true, onDelete: 'CASCADE' })
   farms: Farm[];
 }

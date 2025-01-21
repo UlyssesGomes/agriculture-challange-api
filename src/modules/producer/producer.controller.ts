@@ -41,7 +41,7 @@ export class ProducerController {
   @ApiOperation({ summary: 'Create a new producer' })
   @ApiResponse({ status: 201, description: 'Producer created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid request data' })
-  create(@Body() createProducerDto: ProducerDto) {
+  create(@Body() createProducerDto: any) {
     return this.producerService.create(createProducerDto);
   }
 

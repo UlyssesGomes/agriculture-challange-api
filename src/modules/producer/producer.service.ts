@@ -39,7 +39,7 @@ export class ProducerService {
 
   async create(data: any) {
     this.preCreate(data);
-    await this.producerRepository.insert(data);
+    await this.producerRepository.save(data);
     return data;
   }
 
