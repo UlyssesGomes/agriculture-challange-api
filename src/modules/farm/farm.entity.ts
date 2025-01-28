@@ -33,9 +33,9 @@ export class Farm extends BaseEntity {
   @Column()
   arableArea: number;
 
-  @ManyToOne(() => Producer, (producer) => producer.farms)
+  @ManyToOne(() => Producer, (producer) => producer.farms, { onDelete: 'CASCADE' })
   producer: Producer;
 
-  @OneToMany(() => Harvest, (harvest) => harvest.farm, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => Harvest, (harvest) => harvest.farm, { cascade: true })
   harvests: Harvest[];
 }

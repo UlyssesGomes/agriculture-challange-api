@@ -18,9 +18,9 @@ export class Harvest extends BaseEntity {
   @Column()
   year: number;
 
-  @ManyToOne(() => Farm, (farm) => farm.harvests)
+  @ManyToOne(() => Farm, (farm) => farm.harvests, { onDelete: 'CASCADE' })
   farm: Farm;
 
-  @OneToMany(() => PlantedCrop, (plantedCrop) => plantedCrop.harvest, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => PlantedCrop, (plantedCrop) => plantedCrop.harvest, { cascade: true })
   plantedCrops: PlantedCrop[];
 }

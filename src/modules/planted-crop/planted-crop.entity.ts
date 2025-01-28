@@ -16,6 +16,6 @@ export class PlantedCrop extends BaseEntity {
   @Column({ type: 'varchar', length: 300 })
   crop: string;
 
-  @ManyToOne(() => Harvest, (harvest) => harvest.plantedCrops)
+  @ManyToOne(() => Harvest, (harvest) => harvest.plantedCrops, { onDelete: 'CASCADE'})
   harvest: Harvest;
 }

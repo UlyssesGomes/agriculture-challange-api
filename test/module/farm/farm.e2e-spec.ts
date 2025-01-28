@@ -4,9 +4,8 @@ import { Test } from '@nestjs/testing';
 import { AppModule } from '../../../src/app.module';
 import * as request from 'supertest';
 import { ProducerType } from '../../../src/modules/producer/producer.enum';
-import { Producer } from '../../../src/modules/producer/producer.entity';
 
-describe('ProducersController (e2e)', () => {
+describe('FarmController (e2e)', () => {
     let app: INestApplication;
 
     beforeAll(async () => {
@@ -23,158 +22,164 @@ describe('ProducersController (e2e)', () => {
     });
 
     describe('POST', () => {
+        let farmId;
         let producerId;
 
-        it('should create a new producer with CPF', async () => {
-
+        beforeAll(async () => {
             const producerData = {
-                cpf: '47769091039',
-                name: 'John Doe',
-                type: ProducerType.PF,
+                cnpj: '44385561000121',
+                cpf: null,
+                name: 'Producer Mock',
+                type: ProducerType.PJ
             };
 
-            const response = await request(app.getHttpServer())
+            let response = await request(app.getHttpServer())
                 .post('/producer')
                 .send(producerData)
                 .expect(201);
 
             producerId = response.body.id;
-
-            expect(response.body).toEqual(
-                expect.objectContaining({
-                    id: expect.any(Number),
-                    cpf: '47769091039',
-                    name: 'John Doe',
-                    type: ProducerType.PF
-                }),
-            );
         });
 
-        it('should create a new producer with CNPJ', async () => {
-            const producerData = {
-                cnpj: '16643066000130',
-                name: 'Jane Doe',
-                type: ProducerType.PJ,
+        it('should create a new farm', async () => {
+
+            const farmData = {
+                name: 'Farm Test',
+                city: 'City Test',
+                state: 'State Test',
+                totalArea: 100,
+                vegetationArea: 50,
+                arableArea: 30,
+                producer: {
+                    id: producerId
+                }
             };
 
-            const response = await request(app.getHttpServer())
-                .post('/producer')
-                .send(producerData)
+            let response = await request(app.getHttpServer())
+                .post('/farm')
+                .send(farmData)
                 .expect(201);
 
-            producerId = response.body.id;
+            farmId = response.body.id;
 
             expect(response.body).toEqual(
                 expect.objectContaining({
                     id: expect.any(Number),
-                    cnpj: '16643066000130',
-                    name: 'Jane Doe',
-                    type: ProducerType.PJ
+                    name: 'Farm Test',
+                    city: 'City Test',
+                    state: 'State Test',
+                    totalArea: 100,
+                    vegetationArea: 50,
+                    arableArea: 30,
+                    producer: {
+                        id: producerId
+                    }
                 }),
             );
         });
 
-        it('should return a bad request error with invalid CPF', async () => {
-            const producerData = {
-                cpf: '1234567890',
-                name: 'John Doe',
-                type: ProducerType.PF,
+        it('should create a farm with totalArea < (vegetationArea + arableArea) and throw bad request.', async () => {
+
+            let farmData = {
+                name: 'Farm Test',
+                city: 'City Test',
+                state: 'State Test',
+                totalArea: 50,
+                vegetationArea: 30,
+                arableArea: 30,
+                producer: {
+                    id: producerId
+                }
             };
 
-            producerId = null;
-
-            const response = await request(app.getHttpServer())
-                .post('/producer')
-                .send(producerData)
-                .expect(400);
-        });
-
-        it('should return a bad request error with invalid CNPJ', async () => {
-            const producerData = {
-                cnpj: '01234567890123',
-                name: 'Jane Doe',
-                type: ProducerType.PJ,
-            };
-
-            const response = await request(app.getHttpServer())
-                .post('/producer')
-                .send(producerData)
+            let response = await request(app.getHttpServer())
+                .post('/farm')
+                .send(farmData)
                 .expect(400);
 
-            producerId = response.body.id;
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    message: 'The total area must be greater than or equal to the sum of vegetation area plus arable area',
+                    error: 'Bad Request',
+                    statusCode: 400
+                }),
+            );
         });
 
-        afterEach(async () => {
-            if (producerId) {
+        afterAll(async () => {
+            if (farmId) {
                 await request(app.getHttpServer())
                     .delete(`/producer/${producerId}`).expect(204);
             }
         });
     });
 
-    describe('PATCH', () => {
+    fdescribe('PATCH', () => {
+        let farmId: number;
         let producerId: number;
-        const deletedId = 1;
 
         beforeAll(async () => {
-            const producerData = {
-                cnpj: '16643066000130',
-                name: 'Happy Farm LTDA',
+
+            const newProducerData = {
+                cnpj: '44385561000121',
+                cpf: null,
+                name: 'New Producer Mock',
                 type: ProducerType.PJ
             };
 
-            const response = await request(app.getHttpServer())
+            let response = await request(app.getHttpServer())
                 .post('/producer')
-                .send(producerData)
+                .send(newProducerData)
+                .expect(201);
 
             producerId = response.body.id;
 
-            await request(app.getHttpServer())
-                .delete(`/producer/${deletedId}`)
-                .send(producerData)
-        });
-
-        it('should return a not found error if producer does not exist', async () => {
-            const updatedProducerData = {
-                name: 'Happy Farm LTDA Updated',
+            const farmData = {
+                name: 'Test Farm',
+                city: 'City Test',
+                state: 'State Test',
+                totalArea: 120,
+                vegetationArea: 60,
+                arableArea: 40,
+                producer: {
+                    id: producerId
+                }
             };
 
-            const response = await request(app.getHttpServer())
-                .patch(`/producer/${deletedId}`)
-                .send(updatedProducerData)
-                .expect(404);
+            response = await request(app.getHttpServer())
+                .post('/farm')
+                .send(farmData)
+                .expect(201);
 
-            expect(response.body).toEqual(
-                expect.objectContaining({
-                    statusCode: 404,
-                    message: `Producer with ID ${deletedId} not found`,
-                    error: 'Not Found'
-                }),
-            );
+            farmId = response.body.id;
         });
 
-        it('should update a producer with new data', async () => {
-            const updatedProducerData = {
-                name: 'Happy Farm LTDA Updated',
+        it('should update a farm with new data', async () => {
+
+            const farmData = {
+                name: 'Updated Farm'
             };
 
-            const response = await request(app.getHttpServer())
-                .patch(`/producer/${producerId}`)
-                .send(updatedProducerData)
+            let response = await request(app.getHttpServer())
+                .patch(`/farm/${farmId}`)
+                .send(farmData)
                 .expect(200);
 
             expect(response.body).toEqual(
                 expect.objectContaining({
-                    id: producerId,
-                    cnpj: '16643066000130',
-                    name: 'Happy Farm LTDA Updated',
-                    type: ProducerType.PJ
+                    id: expect.any(Number),
+                    name: 'Updated Farm',
+                    city: 'City Test',
+                    state: 'State Test',
+                    totalArea: 120,
+                    vegetationArea: 60,
+                    arableArea: 40
                 }),
             );
         });
 
         afterAll(async () => {
-            if (producerId) {
+            if (farmId) {
                 await request(app.getHttpServer())
                     .delete(`/producer/${producerId}`)
             }
@@ -286,7 +291,7 @@ describe('ProducersController (e2e)', () => {
         });
 
         it('should find a producer by ID with details', async () => {
-            const response = await request(app.getHttpServer()).get(`/producer/${producerId}/details`).expect(200);            
+            const response = await request(app.getHttpServer()).get(`/producer/${producerId}/details`).expect(200);
         });
 
         it('should return a not found error if producer does not exist', async () => {
